@@ -232,8 +232,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         //让全局imgulr数组清空
         constants.allTypeDataContentImg = new ArrayList<>();
-//        unbindService(conn);
-//        onFinished();
     }
 
     public void GoForDetailinfo() {
