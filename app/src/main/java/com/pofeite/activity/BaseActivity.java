@@ -254,6 +254,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                             Type listType = new TypeToken<LinkedList<Contentlist>>() {
                             }.getType();
                             Gson gson = new Gson();
+                            if (constants.allTypeDataContentImg != null) {
+                                constants.allTypeDataContentImg = new ArrayList<>();
+                            }
                             LinkedList<Contentlist> users = gson.fromJson(typeList11.toString(), listType);
                             for (Iterator iterator = users.iterator(); iterator.hasNext(); ) {
                                 Contentlist list = (Contentlist) iterator.next();

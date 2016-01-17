@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import java.util.List;
 import adapter.HomeAdapter;
 import service.MyService;
 import utils.Constants;
+
 
 
 /**
@@ -52,7 +54,9 @@ public class WeixinActivity extends BaseActivity {
     @Override
     public void initData() {
         constants = new Constants();
-        imageUrls = constants.allTypeDataContentImg;    //拿到img的url
+//        if (imageUrls == null) {
+            imageUrls = constants.allTypeDataContentImg;    //拿到img的url
+//        }
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_stub) // 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.ic_empty) // 设置图片Uri为空或是错误的时候显示的图片
@@ -115,24 +119,28 @@ public class WeixinActivity extends BaseActivity {
 
         @Override
         public int getCount() {
+            Log.d("getCount:", "" + imageUrls.size());
             return imageUrls.size();
         }
 
         @Override
         public Object getItem(int position) {
+            Log.d("getItem:", "" + imageUrls.get(position));
             return imageUrls.get(position);
         }
 
         @Override
         public long getItemId(int position) {
+            Log.d("getItemId:", "" + position);
             return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder = null;
+            ViewHolder viewHolder = new ViewHolder();
             if (convertView == null) {
-                viewHolder = new ViewHolder();
+                Log.d("convertView == null", "aa11");
+//                viewHolder = new ViewHolder();
                 convertView = getLayoutInflater().inflate(R.layout.item_grid, parent, false);
                 viewHolder.image2 = (ImageView) convertView.findViewById(R.id.tou_ming_img);
                 viewHolder.image2.setAlpha(100);
@@ -140,9 +148,11 @@ public class WeixinActivity extends BaseActivity {
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.iv_grid_image);
                 convertView.setTag(viewHolder);
             } else {
+                Log.d("convertView != null", "bb11");
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.Title.setText(allTypeDataTitle.get(position));
+            Log.d("imageUrls.size()", "" + imageUrls.size());
             imageLoader.displayImage(imageUrls.get(position), viewHolder.image, options);
 
             return convertView;
