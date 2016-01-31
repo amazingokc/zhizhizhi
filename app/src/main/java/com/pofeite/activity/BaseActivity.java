@@ -62,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     StringRequest stringRequest;
     Gson gson;
     public RecyclerView mRecyclerView;
-//    private HomeAdapter mAdapter;
+
 
     public List<String> allTypeDataDate;
     public List<String> allTypeDataTitle;
