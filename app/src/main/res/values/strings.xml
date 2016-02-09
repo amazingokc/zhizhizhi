@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">精选阅读</string>
-    <string name="action_settings">浏览器</string>
+    <string name="action_settings">微信分享</string>
     <string name="drawer_open">打开</string>
     <string name="drawer_close">关闭</string>
     <string name="Type">分类</string>
     <string name="TypeName">随机</string>
     <string name="zhihu">知乎精选</string>
-    <string name="about">说明</string>
+    <string name="about">关于</string>
+    <string name="other_share">分享到其他地方</string>
+    <string name="share_wx_timeline">分享到朋友圈</string>
     <string name="nodate">暂时没有文章可以更新</string>
     <string name="no_result">no result</string>
 </resources>

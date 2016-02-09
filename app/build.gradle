@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.pofeite.volley"
+        applicationId "com.pofeite.reader"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
@@ -23,7 +23,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1' //ASD给我们提供了Material Design提供了向下的兼容
+    compile 'com.android.support:design:23.1.1'
+    //ASD给我们提供了Material Design提供了向下的兼容
     compile project(':volley')
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.android.support:recyclerview-v7:23.0.1'
@@ -31,8 +32,8 @@ dependencies {
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:gridlayout-v7:23.1.1'
     compile 'com.github.satyan:sugar:1.4'
-//    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-
+    //    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile project(':MaterialDesign')
+    compile files('libs/libammsdk.jar')
 }

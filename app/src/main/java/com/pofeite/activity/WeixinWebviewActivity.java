@@ -2,6 +2,7 @@ package com.pofeite.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -18,12 +19,20 @@ import android.webkit.WebViewClient;
 
 import com.gc.materialdesign.views.ProgressBarIndeterminate;
 import com.pofeite.reader.R;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import utils.Util;
 
 /**
  * Created by xgj on 2015/12/16.
  */
 public class WeixinWebviewActivity extends AppCompatActivity {
 
+    private IWXAPI iwxapi;
     private WebView webview;
     private String url;
     private String title;
@@ -34,7 +43,9 @@ public class WeixinWebviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.third_activity);
-        
+
+        iwxapi = WXAPIFactory.createWXAPI(this, "wxa7fe36921eba81f5");
+        iwxapi.registerApp("wxa7fe36921eba81f5");
         webview = (WebView) findViewById(R.id.webview);
         pb = (ProgressBarIndeterminate) findViewById(R.id.progressBarIndeterminate);
         pb.setVisibility(View.VISIBLE);
@@ -45,7 +56,8 @@ public class WeixinWebviewActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);//使活动支持ToolBar
 
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//添加返回键
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //添加返回键
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,14 +69,10 @@ public class WeixinWebviewActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_settings:
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-//                        intent.setAction("android.intent.action.VIEW");
-                        Uri content_url = Uri.parse(url);
-                        intent.setData(content_url);
-                        startActivity(intent);
+                    case R.id.share_wx_timeline:
+                        wecharShare2();
                         break;
-                    case R.id.action_share:
+                    case R.id.other_share:
                     default:
                         break;
                 }
@@ -93,6 +101,26 @@ public class WeixinWebviewActivity extends AppCompatActivity {
         webview.setWebChromeClient(new WebChromeClient());
         webview.setWebViewClient(new HelloWebViewClient());
         webview.loadUrl(url);
+
+    }
+
+    private void wecharShare2() {
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = url;
+
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = title;
+//        msg.description = "网页描述";
+        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.logo2);
+        msg.thumbData = Util.bmpToByteArray(thumb, true);
+
+        //构造一个Req
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+//        req.transaction = buildTra    ?
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = msg;
+        req.scene = SendMessageToWX.Req.WXSceneTimeline;
+        iwxapi.sendReq(req);
 
     }
 
@@ -126,7 +154,7 @@ public class WeixinWebviewActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         /* ShareActionProvider配置 */
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu
-                .findItem(R.id.action_share));
+                .findItem(R.id.other_share));
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        intent.putExtra(Intent.EXTRA_SUBJECT, "Share");

@@ -110,7 +110,7 @@ public class WeixinActivity extends BaseActivity {
                                 Intent intent = new Intent(WeixinActivity.this, WeixinWebviewActivity.class);
                                 intent.putExtra("url",allTypeDataUrl.get(position));
                                 intent.putExtra("title", allTypeDataTitle.get(position));
-                                startActivity(intent);
+                                 startActivity(intent);
             }
         });
     }

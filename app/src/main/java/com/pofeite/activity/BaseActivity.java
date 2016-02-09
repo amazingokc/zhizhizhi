@@ -66,7 +66,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public List<String> allTypeDataDate;
     public List<String> allTypeDataTitle;
-    //    public List<String> allTypeDataContentImg;
+
     public List<String> allTypeDataUrl;
     public List<String> allTypeDataUserName;
 
@@ -201,12 +201,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.about:
                 Intent intent = new Intent(BaseActivity.this, AboutActivity.class);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                 break;
-            case R.id.about:
+            case R.id.zhihu:
                 Intent intent2 = new Intent(BaseActivity.this, ZhihuActivity.class);
                 startActivity(intent2);
                 overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
