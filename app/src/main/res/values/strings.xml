@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">微信精选</string>
+    <string name="app_name">精选阅读</string>
     <string name="action_settings">浏览器</string>
     <string name="drawer_open">打开</string>
     <string name="drawer_close">关闭</string>
