@@ -4,14 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
@@ -19,11 +14,10 @@ import com.pofeite.reader.R;
 
 import java.util.List;
 
+import adapter.GirdViewAdapter;
 import adapter.HomeAdapter;
 import service.MyService;
 import utils.Constants;
-
-
 
 /**
  * Created by xgj on 2015/12/14.
@@ -31,19 +25,14 @@ import utils.Constants;
 public class WeixinActivity extends BaseActivity {
 
     public Constants constants;
-
     private GridView mGridGv;
     private DisplayImageOptions options;	// 设置图片显示相关参数
-//    private String[] imageUrls;		// 图片路径
     private List<String> imageUrls;
     private HomeAdapter mAdapter;
-    private String title;
-
 
     @Override
     public int initResource() {
         return R.layout.activity_gridview;
-//        return 0;
     }
 
     @Override
@@ -54,9 +43,9 @@ public class WeixinActivity extends BaseActivity {
     @Override
     public void initData() {
         constants = new Constants();
-//        if (imageUrls == null) {
-            imageUrls = constants.allTypeDataContentImg;    //拿到img的url
-//        }
+
+        imageUrls = constants.allTypeDataContentImg;    //拿到img的url
+
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_stub) // 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.ic_empty) // 设置图片Uri为空或是错误的时候显示的图片
@@ -68,7 +57,10 @@ public class WeixinActivity extends BaseActivity {
                 .displayer(new RoundedBitmapDisplayer(20)) // 设置成圆角图片
                 .build();
 
-        mGridGv.setAdapter(new ItemGridAdapter());
+        GirdViewAdapter mGirdViewAdapter = new GirdViewAdapter(this, imageUrls, imageLoader,
+                allTypeDataTitle, options);
+        mGridGv.setAdapter(mGirdViewAdapter);
+
 //        imageScaleType(ImageScaleType.EXACTLY_STRETCHED);
         if (allTypeName.size() == 0 && MyService.allTypeDateName != null) {
             allTypeName = MyService.allTypeDateName;
@@ -83,10 +75,7 @@ public class WeixinActivity extends BaseActivity {
             mAdapter.setmOnItemClickListener(new HomeAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-//                    Toast.makeText(WeixinActivity.this, allTypeName.get(position) + allTypeDateId.get(position),
-//                            Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(WeixinActivity.this, WeixinActivity.class);
-//                    intent.putExtra("name", allTypeName.get(position));
                     intent.putExtra("id", allTypeDateId.get(position));  //给自己传递id
                     intent.putExtra("name", allTypeName.get(position));//给自己传递name
                     startActivity(intent);
@@ -114,56 +103,5 @@ public class WeixinActivity extends BaseActivity {
             }
         });
     }
-
-    class ItemGridAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            Log.d("getCount:", "" + imageUrls.size());
-            return imageUrls.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            Log.d("getItem:", "" + imageUrls.get(position));
-            return imageUrls.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            Log.d("getItemId:", "" + position);
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder = new ViewHolder();
-            if (convertView == null) {
-                Log.d("convertView == null", "aa11");
-//                viewHolder = new ViewHolder();
-                convertView = getLayoutInflater().inflate(R.layout.item_grid, parent, false);
-                viewHolder.image2 = (ImageView) convertView.findViewById(R.id.tou_ming_img);
-                viewHolder.image2.setAlpha(100);
-                viewHolder.Title = (TextView) convertView.findViewById(R.id.title);
-                viewHolder.image = (ImageView) convertView.findViewById(R.id.iv_grid_image);
-                convertView.setTag(viewHolder);
-            } else {
-                Log.d("convertView != null", "bb11");
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-            viewHolder.Title.setText(allTypeDataTitle.get(position));
-            Log.d("imageUrls.size()", "" + imageUrls.size());
-            imageLoader.displayImage(imageUrls.get(position), viewHolder.image, options);
-
-            return convertView;
-        }
-
-        public class ViewHolder {
-            public ImageView image,image2;
-            public TextView Title;
-        }
-
-    }
-
 
 }

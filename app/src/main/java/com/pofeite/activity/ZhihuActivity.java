@@ -25,6 +25,8 @@ public class ZhihuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+//                finish();
+
             }
         });
 

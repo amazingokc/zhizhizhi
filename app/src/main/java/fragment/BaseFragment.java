@@ -91,6 +91,20 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        isVisible = false;
+        Log.d("onPause", "onPause and unvisivle");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isVisible = true;
+    }
+
     /** Fragment当前状态是否可见 */
     protected boolean isVisible;
 
@@ -101,9 +115,11 @@ public abstract class BaseFragment extends Fragment {
 
         if(getUserVisibleHint()) {
             isVisible = true;
+            Log.d("visible", "visible");
             onVisible();
         } else {
             isVisible = false;
+            Log.d("unvisible", "unvisible");
             onInvisible();
         }
     }
@@ -170,8 +186,11 @@ public abstract class BaseFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-//                        mRecyclerView = (RecyclerView) view.findViewById(R.id.id_recyclerview_recentfragment);
-                        setAdapter();
+                        if (isVisible) {
+
+                            setAdapter();
+                        }
+
                     }
                 },
                 new Response.ErrorListener() {

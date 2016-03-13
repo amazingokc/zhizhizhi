@@ -16,7 +16,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,17 +55,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected ImageLoader imageLoader;
 
     static String httpUrl = "http://apis.baidu.com/showapi_open_bus/weixin/weixin_article_list";
-    //    static String httpArg = "typeId=19&page=1&key=1";
-//    static String url = httpUrl + httpArg;
     RequestQueue mQueue;
     StringRequest stringRequest;
     Gson gson;
     public RecyclerView mRecyclerView;
-//    private HomeAdapter mAdapter;
 
     public List<String> allTypeDataDate;
     public List<String> allTypeDataTitle;
-    //    public List<String> allTypeDataContentImg;
     public List<String> allTypeDataUrl;
     public List<String> allTypeDataUserName;
 
@@ -98,7 +93,6 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     public abstract void addListener();
 
-    private Button button_okc;
     private ActionBarDrawerToggle mDrawerToggle;         //定义toolbar左上角的弹出左侧菜单按钮
     private DrawerLayout mDrawerLayout;
     List<String> allTypeName;
@@ -108,16 +102,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ServiceConnection conn = new ServiceConnection() {
         /** 获取服务对象时的操作 */
         public void onServiceConnected(ComponentName name, IBinder service) {
-            // TODO Auto-generated method stub
             countService = ((MyService.ServiceBinder) service).getService();
 
-            MyService.MyListener l = new MyService.MyListener() {
+            MyService.MyListener listener = new MyService.MyListener() {
                 @Override
                 public void chang(String str) {
-//                    Toast.makeText(BaseActivity.this, "" + str, Toast.LENGTH_LONG).show();
+//                  Toast.makeText(BaseActivity.this, "" + str, Toast.LENGTH_LONG).show();
                     Log.d("str", "" + str);
                     typeId = str;
-//                    type = "看看";
                     gson = new Gson();
                     mQueue = Volley.newRequestQueue(BaseActivity.this);
                     GoForDetailinfo();
@@ -125,24 +117,23 @@ public abstract class BaseActivity extends AppCompatActivity {
                     imageLoader = ImageLoader.getInstance();
                 }
             };
-            countService.setMyListener(l);
+            countService.setMyListener(listener);
         }
 
         /** 无法获取到服务对象时的操作 */
         public void onServiceDisconnected(ComponentName name) {
-            // TODO Auto-generated method stub
         }
     };
+
     MyService countService = null;
     private ProgressBarCircularIndeterminate pb;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(initResource());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setNavigationIcon(R.mipmap.ic_launcher);//设置ToolBar头部图标
+//      toolbar.setNavigationIcon(R.mipmap.ic_launcher);//设置ToolBar头部图标
 
         Intent intent = getIntent();
         typeId = intent.getStringExtra("id");
@@ -159,12 +150,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        startService(new Intent(this, MyService.class));
+//        startService(new Intent(this, MyService.class));
         bindService(new Intent(this, MyService.class), conn, Context.BIND_AUTO_CREATE);
 
         constants = new Constants();
 
-//        Log.d("asdasd", "" + typeId);
         allTypeName = new ArrayList<>();
         allTypeDateId = new ArrayList<>();
 
@@ -181,6 +171,22 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        unbindService(conn);
+        if (mQueue != null) {
+            mQueue.cancelAll(BaseActivity.this);
+        }
+        //让全局imgulr数组清空,否则会叠加之前的元素
+        constants.allTypeDataContentImg = new ArrayList<>();
     }
 
     @Override
@@ -201,12 +207,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.about:
                 Intent intent = new Intent(BaseActivity.this, AboutActivity.class);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                 break;
-            case R.id.about:
+            case R.id.zhihu:
                 Intent intent2 = new Intent(BaseActivity.this, ZhihuActivity.class);
                 startActivity(intent2);
                 overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
@@ -216,23 +222,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        if (typeId != null) {
-//            typeId = null;
-//        }
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mQueue != null) {
-            mQueue.cancelAll(BaseActivity.this);
-        }
-        //让全局imgulr数组清空
-        constants.allTypeDataContentImg = new ArrayList<>();
-    }
 
     public void GoForDetailinfo() {
         stringRequest = new StringRequest(Request.Method.POST, httpUrl,

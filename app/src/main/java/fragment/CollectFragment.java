@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pofeite.activity.ZhihuWebviewActivity;
 import com.pofeite.reader.R;
@@ -74,7 +73,6 @@ public class CollectFragment extends BaseFragment {
         mAdapter.setmOnItemClickListener(new ZhihuAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getActivity(), "click", Toast.LENGTH_SHORT).show();
                 answer_url = allUrl.get(position);
                 Intent intent = new Intent(getActivity(), ZhihuWebviewActivity.class);
                 intent.putExtra("answer_url", answer_url);
@@ -86,7 +84,6 @@ public class CollectFragment extends BaseFragment {
 
             @Override
             public void onItemLongClick(View view, int position) {
-//                title.get(position).delete();
             }
         });
 
@@ -192,7 +189,6 @@ public class CollectFragment extends BaseFragment {
         } else {
             no_data.setVisibility(View.GONE);
         }
-//        Log.d("titleget", "" + title.get(0));
         for (int i = (title.size() - 1); i >= 0; i--) {
             alltitle.add(title.get(i).getAllTitle());
             allUrl.add(title.get(i).getAllUrl());

@@ -2,11 +2,16 @@ package com.pofeite.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -16,20 +21,28 @@ import android.widget.Toast;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ProgressBarIndeterminate;
 import com.pofeite.reader.R;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import bean.Collection;
+import utils.Util;
 
 /**
  * Created by xgj on 2016/1/2.
  */
 public class ZhihuWebviewActivity extends AppCompatActivity  {
 
+    private IWXAPI iwxapi;
     private WebView webview;
     private ProgressBarIndeterminate pb;
     private String url;
     private String title;
     private String summary;
     private String vote;
+    private ShareActionProvider mShareActionProvider;
 
     ButtonFloat buttonFloat;
 
@@ -37,6 +50,9 @@ public class ZhihuWebviewActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.zhihu_webview_layout);
+
+        iwxapi = WXAPIFactory.createWXAPI(this, "wxa7fe36921eba81f5");
+        iwxapi.registerApp("wxa7fe36921eba81f5");
         webview = (WebView) findViewById(R.id.webview_zhihu);
         pb = (ProgressBarIndeterminate) findViewById(R.id.progressBarIndeterminate);
 
@@ -94,6 +110,63 @@ public class ZhihuWebviewActivity extends AppCompatActivity  {
                 onBackPressed();
             }
         });
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.share_wx_timeline:
+                        wecharShare();
+                        break;
+                    case R.id.other_share:
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void wecharShare() {
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = url;
+
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = title;
+//        msg.description = "网页描述";
+        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.logo2);
+        msg.thumbData = Util.bmpToByteArray(thumb, true);
+
+        //构造一个Req
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+//        req.transaction = buildTra    ?
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = msg;
+        req.scene = SendMessageToWX.Req.WXSceneTimeline;
+        iwxapi.sendReq(req);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        /* ShareActionProvider配置 */
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu
+                .findItem(R.id.other_share));
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtra(Intent.EXTRA_SUBJECT, "Share");
+        intent.putExtra(Intent.EXTRA_TEXT, title + "(" + url + ")");
+        intent.setType("image/*");
+        mShareActionProvider.setShareIntent(intent);
+//        startActivity(Intent.createChooser(intent, getTitle()));
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+//        return false;
     }
     /**
      * 收藏文章

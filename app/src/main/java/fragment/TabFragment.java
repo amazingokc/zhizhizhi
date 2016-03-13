@@ -40,6 +40,11 @@ public class TabFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
     /**
      * 初始化各控件
      * @param view

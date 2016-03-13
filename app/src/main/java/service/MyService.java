@@ -106,8 +106,8 @@ public class MyService extends Service {
         void chang(String str);
     }
 
-    public void setMyListener(MyListener l) {
-        this.listener = l;
+    public void setMyListener(MyListener listener) {
+        this.listener = listener;
     }
 
     static final String httpUrl = "http://apis.baidu.com/showapi_open_bus/weixin/weixin_article_type";
@@ -117,6 +117,9 @@ public class MyService extends Service {
     StringRequest stringRequest;
     Gson gson;
 
+    /**
+     * 获取侧滑栏的标题
+     */
     public void GoForTypetitle() {
         stringRequest = new StringRequest(Request.Method.GET, httpUrl,
                 new Response.Listener<String>() {
@@ -128,14 +131,11 @@ public class MyService extends Service {
                             JSONObject dataJson = new JSONObject(response);
                             Log.d("dataJson1", "" + dataJson);
                             JSONObject showapi_res_body = dataJson.getJSONObject("showapi_res_body");
-                            JSONArray typeList11 = showapi_res_body.getJSONArray("typeList");
-//                            Log.d("typeList", "" + typeList11);
+                            JSONArray typeList = showapi_res_body.getJSONArray("typeList");
 
-
-                            Type listType = new TypeToken<LinkedList<TypeList>>() {
-                            }.getType();
+                            Type listType = new TypeToken<LinkedList<TypeList>>() {}.getType();
                             Gson gson = new Gson();
-                            LinkedList<TypeList> users = gson.fromJson(typeList11.toString(), listType);
+                            LinkedList<TypeList> users = gson.fromJson(typeList.toString(), listType);
                             for (Iterator iterator = users.iterator(); iterator.hasNext(); ) {
                                 TypeList list = (TypeList) iterator.next();
 
